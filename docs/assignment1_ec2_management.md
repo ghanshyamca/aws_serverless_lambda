@@ -37,10 +37,12 @@ This Lambda function automatically manages EC2 instances by:
   - Key: `Action`, Value: `Auto-Start`
   - Key: `Name`, Value: `Auto-Start-Instance`
 
-**Screenshot:** `screenshots/assignment1_ec2_instances.png`
-- Shows both instances with their respective tags
+**Screenshot:** 
+<img width="1920" height="912" alt="step 1  Launch-an-instance-EC2-us-east-1-01-03-2026_07_32_PM" src="https://github.com/user-attachments/assets/32e70d01-dfbe-49db-9b84-6744bb81bd2a" />
+<img width="1920" height="912" alt="step 2  Added tag" src="https://github.com/user-attachments/assets/22f9ffd2-3566-41ee-9487-c80e4c08da30" />
+<img width="1920" height="912" alt="step 3  Launch stop ec2 Instance-details-EC2-us-east-1-01-03-2026_07_38_PM" src="https://github.com/user-attachments/assets/90216d2c-c37a-4c4f-ac5a-34d0c7138b41" />
+<img width="1920" height="912" alt="step 4  Added tag Instances-EC2-us-east-1-01-03-2026_07_41_PM" src="https://github.com/user-attachments/assets/77b8a093-eb30-4393-a884-5b58b8be0918" />
 
----
 
 ### Step 2: Create IAM Role for Lambda
 
@@ -50,37 +52,8 @@ This Lambda function automatically manages EC2 instances by:
    - `AmazonEC2FullAccess` (for demo purposes)
    - `CloudWatchLogsFullAccess` (for logging)
 
-4. Name the role: `Lambda-EC2-AutoManagement-Role`
-
-**Best Practice:** In production, create a custom policy with minimal permissions:
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DescribeInstances",
-        "ec2:StopInstances",
-        "ec2:StartInstances",
-        "ec2:DescribeTags"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ],
-      "Resource": "arn:aws:logs:*:*:*"
-    }
-  ]
-}
-```
-
-**Screenshot:** `screenshots/assignment1_iam_role.png`
+**Screenshot:** 
+<img width="1920" height="1265" alt="step 5  ghanshyam_lamdba-IAM-Global-01-03-2026_07_46_PM" src="https://github.com/user-attachments/assets/3ceba505-2d78-4c61-9290-ae728b94a4de" />
 
 ---
 
@@ -89,13 +62,16 @@ This Lambda function automatically manages EC2 instances by:
 1. Navigate to **Lambda Console** → **Create Function**
 2. Configuration:
    - **Function name:** `EC2-Auto-Management`
-   - **Runtime:** Python 3.11 or 3.12
+   - **Runtime:** Python 3.14
    - **Architecture:** x86_64
-   - **Execution role:** Use existing role → `Lambda-EC2-AutoManagement-Role`
+   - **Execution role:** Use existing created role
 
 3. Click **Create Function**
 
-**Screenshot:** `screenshots/assignment1_lambda_create.png`
+**Screenshot:** 
+<img width="1920" height="2278" alt="step 6   created lamdba function ghanshyam_lamdba_ec2-Functions-Lambda-01-03-2026_07_48_PM" src="https://github.com/user-attachments/assets/1bf27eb4-666c-4193-a49b-e646201da563" />
+
+<img width="1920" height="2278" alt="Step 6 1 create lamdba function ghanshyam_lamdba_ec2-Functions-Lambda-01-03-2026_07_53_PM" src="https://github.com/user-attachments/assets/a95f1f9b-08fb-47a8-8369-de68dee92a1c" />
 
 ---
 
@@ -114,22 +90,13 @@ This Lambda function automatically manages EC2 instances by:
 - Logs all operations for monitoring
 - Returns detailed response with affected instances
 
-**Screenshot:** `screenshots/assignment1_lambda_code.png`
+**Screenshot:** 
+<img width="1920" height="912" alt="step 7  execution lamdba sucessfull" src="https://github.com/user-attachments/assets/2881edc5-ccbd-41cf-90ba-b9aa0650248a" />
+
 
 ---
 
-### Step 5: Configure Lambda Settings (Optional)
-
-1. **Configuration** → **General Configuration**
-   - Timeout: 30 seconds (sufficient for EC2 operations)
-   - Memory: 128 MB (default is adequate)
-
-2. **Environment Variables** (optional):
-   - Can add variables to customize behavior without code changes
-
----
-
-### Step 6: Test the Lambda Function
+### Step 5: Test the Lambda Function
 
 1. Click **Test** tab
 2. Create a new test event:
@@ -148,149 +115,24 @@ This Lambda function automatically manages EC2 instances by:
 - Instance with `Auto-Start` tag → Started
 - CloudWatch logs show detailed execution
 
-**Screenshot:** `screenshots/assignment1_test_result.png`
+**Screenshot:** 
+<img width="1920" height="912" alt="step 8  CloudWatch-us-east-1-01-03-2026_08_11_PM" src="https://github.com/user-attachments/assets/ac099b6c-d0c9-44d1-9e18-180b5f1183ad" />
+
 
 ---
 
-### Step 7: Verify EC2 Instance States
+### Step 6: Verify EC2 Instance States
 
 1. Go to **EC2 Dashboard** → **Instances**
 2. Check the state of both instances:
    - `Auto-Stop-Instance` should be **Stopped** (or **Stopping**)
    - `Auto-Start-Instance` should be **Running** (or **Pending**)
 
-**Screenshot:** `screenshots/assignment1_ec2_states.png`
+**Screenshot:** 
+<img width="1920" height="912" alt="Step 9  Instances-EC2-us-east-1-01-03-2026_08_15_PM" src="https://github.com/user-attachments/assets/7d2c474f-e420-41d7-b321-85d647c0b9c6" />
+
 
 ---
-
-### Step 8: Review CloudWatch Logs
-
-1. Go to **CloudWatch** → **Log groups**
-2. Find log group: `/aws/lambda/EC2-Auto-Management`
-3. View latest log stream
-
-**Sample Log Output:**
-```
-Lambda function started at 2026-01-03T10:30:00.000000
-Searching for instances with Action=Auto-Stop tag...
-Found 1 instance(s) to stop: ['i-0123456789abcdef0']
-Stopped instance: i-0123456789abcdef0 (Previous: running, Current: stopping)
-Searching for instances with Action=Auto-Start tag...
-Found 1 instance(s) to start: ['i-0123456789abcdef1']
-Started instance: i-0123456789abcdef1 (Previous: stopped, Current: pending)
-Lambda function completed successfully
-Summary: Stopped 1 instance(s), Started 1 instance(s)
-```
-
-**Screenshot:** `screenshots/assignment1_cloudwatch_logs.png`
-
----
-
-## Optional Enhancements
-
-### Schedule with EventBridge (CloudWatch Events)
-
-To run this function automatically (e.g., every day at 6 PM to stop instances):
-
-1. Go to **EventBridge** → **Rules** → **Create Rule**
-2. Configuration:
-   - **Name:** `EC2-AutoStop-Daily`
-   - **Rule type:** Schedule
-   - **Schedule pattern:** `cron(0 18 * * ? *)`  # 6 PM UTC daily
-   - **Target:** Lambda function → `EC2-Auto-Management`
-
-**Screenshot:** `screenshots/assignment1_eventbridge_schedule.png`
-
----
-
-## Testing Scenarios
-
-### Test Case 1: Stop Running Instance
-1. Ensure `Auto-Stop-Instance` is **Running**
-2. Invoke Lambda function
-3. Verify instance is **Stopped**
-
-### Test Case 2: Start Stopped Instance
-1. Ensure `Auto-Start-Instance` is **Stopped**
-2. Invoke Lambda function
-3. Verify instance is **Running**
-
-### Test Case 3: No Action Needed
-1. Ensure `Auto-Stop-Instance` is already **Stopped**
-2. Ensure `Auto-Start-Instance` is already **Running**
-3. Invoke Lambda function
-4. Verify no state changes occur (logged in CloudWatch)
-
----
-
-## Troubleshooting
-
-### Issue: Permission Denied
-**Error:** `An error occurred (UnauthorizedOperation)`
-
-**Solution:** 
-- Verify IAM role has EC2 permissions
-- Check role is attached to Lambda function
-
-### Issue: Instance Not Found
-**Error:** No instances found with tags
-
-**Solution:**
-- Verify EC2 instances have correct tags (case-sensitive)
-- Check instance is in the same region as Lambda function
-
-### Issue: Lambda Timeout
-**Error:** Task timed out after X seconds
-
-**Solution:**
-- Increase Lambda timeout (Configuration → General)
-- Check for too many instances being processed
-
----
-
-## Cost Considerations
-
-- **Lambda:** First 1M requests/month are free
-- **EC2:** Running hours reduced by auto-stopping instances
-- **CloudWatch Logs:** Free tier includes 5 GB ingestion
-
-**Estimated Monthly Savings:**
-- Stopping instances for 12 hours/day can save ~50% on EC2 costs
-
----
-
-## Security Best Practices
-
-1. ✅ Use least-privilege IAM policies
-2. ✅ Enable CloudTrail for audit logging
-3. ✅ Use specific resource ARNs when possible
-4. ✅ Encrypt environment variables
-5. ✅ Review Lambda function logs regularly
-
----
-
-## Cleanup
-
-To avoid ongoing charges:
-
-1. Delete Lambda function
-2. Delete IAM role
-3. Terminate EC2 instances
-4. Delete CloudWatch log groups
-5. Delete EventBridge rules (if created)
-
----
-
-## Conclusion
-
-This assignment demonstrates:
-- ✅ Automated EC2 instance management
-- ✅ Tag-based resource control
-- ✅ AWS Lambda with Boto3
-- ✅ Infrastructure automation
-- ✅ Cost optimization strategies
-
-**Key Learnings:**
 - Event-driven automation
 - AWS SDK (Boto3) usage
 - IAM role configuration
