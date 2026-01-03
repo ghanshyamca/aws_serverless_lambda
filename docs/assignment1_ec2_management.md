@@ -133,7 +133,3 @@ This Lambda function automatically manages EC2 instances by:
 
 
 ---
-- Event-driven automation
-- AWS SDK (Boto3) usage
-- IAM role configuration
-- CloudWatch monitoring
