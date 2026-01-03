@@ -33,7 +33,10 @@ This Lambda function:
 
 3. Click **Create Bucket**
 
-**Screenshot:** `screenshots/assignment2_s3_bucket_create.png`
+**Screenshot:** 
+<img width="1920" height="2651" alt="step 1  Create-S3-bucket-S3-us-east-1-01-03-2026_08_37_PM" src="https://github.com/user-attachments/assets/c4bf5494-cc45-4c3a-a1df-1cd27ef8e926" />
+
+<img width="1920" height="912" alt="step 2   s3 bucket ghanshyam-cleanup-bucket-S3-bucket-S3-us-east-1-01-03-2026_08_49_PM" src="https://github.com/user-attachments/assets/161effda-1e10-4711-996d-95758a3a8730" />
 
 ---
 
@@ -47,36 +50,11 @@ Upload multiple files to simulate different ages:
 3. Add files
 4. Upload
 
-**Method 2: Creating Files Programmatically**
-
-For testing purposes, you can upload files and manually modify their metadata timestamps:
-
-```python
-import boto3
-from datetime import datetime, timedelta
-
-s3 = boto3.client('s3')
-bucket_name = 'my-cleanup-test-bucket-<unique-id>'
-
-# Upload test files
-test_files = [
-    ('old_file_1.txt', 45),  # 45 days old
-    ('old_file_2.txt', 35),  # 35 days old
-    ('recent_file_1.txt', 5), # 5 days old
-    ('recent_file_2.txt', 10) # 10 days old
-]
-
-for filename, days_old in test_files:
-    s3.put_object(
-        Bucket=bucket_name,
-        Key=filename,
-        Body=f'Test content for {filename}'
-    )
-```
-
 **Note:** For actual testing, you may need to use files that are genuinely old, or adjust your system date temporarily.
 
-**Screenshot:** `screenshots/assignment2_s3_files_uploaded.png`
+**Screenshot:** 
+<img width="1920" height="912" alt="step 3  file uploaded" src="https://github.com/user-attachments/assets/e2e31375-3104-405d-a4c0-152f14683889" />
+
 
 ---
 
@@ -88,40 +66,9 @@ for filename, days_old in test_files:
    - `AmazonS3FullAccess` (for demo)
    - `CloudWatchLogsFullAccess` (for logging)
 
-4. Name: `Lambda-S3-Cleanup-Role`
+**Screenshot:**
+<img width="1920" height="1267" alt="step 4  create IAM role ghanshyam_lamdba-IAM-Global-01-03-2026_08_55_PM" src="https://github.com/user-attachments/assets/8d1d140b-bbb5-4c41-a464-6c32a1214281" />
 
-**Production Policy (Least Privilege):**
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:ListBucket",
-        "s3:GetObject",
-        "s3:DeleteObject",
-        "s3:GetBucketLocation"
-      ],
-      "Resource": [
-        "arn:aws:s3:::my-cleanup-test-bucket-*",
-        "arn:aws:s3:::my-cleanup-test-bucket-*/*"
-      ]
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ],
-      "Resource": "arn:aws:logs:*:*:*"
-    }
-  ]
-}
-```
-
-**Screenshot:** `screenshots/assignment2_iam_role.png`
 
 ---
 
@@ -136,7 +83,9 @@ for filename, days_old in test_files:
 
 3. Click **Create Function**
 
-**Screenshot:** `screenshots/assignment2_lambda_create.png`
+**Screenshot:**
+<img width="1920" height="1461" alt="step 5 2 Create-function-Functions-Lambda-01-03-2026_09_25_PM" src="https://github.com/user-attachments/assets/169466c6-7b69-43a3-9d1f-40398a282a74" />
+
 
 ---
 
@@ -160,252 +109,34 @@ for filename, days_old in test_files:
 - Returns size and count of deleted files
 - Error handling for individual file deletions
 
-**Screenshot:** `screenshots/assignment2_lambda_code.png`
+**Screenshot:** 
+<img width="1920" height="2278" alt="Step 6  code ghanshyam_lamdba-Functions-Lambda-01-03-2026_09_26_PM" src="https://github.com/user-attachments/assets/612c11b0-9097-4823-b231-74565aa274b6" />
+
 
 ---
 
-### Step 6: Configure Lambda Settings
-
-1. **Configuration** → **General Configuration**
-   - **Timeout:** 5 minutes (for large buckets)
-   - **Memory:** 256 MB (for processing large file lists)
-
-2. **Environment Variables** (optional):
-   - `BUCKET_NAME`: Your bucket name
-   - `RETENTION_DAYS`: `30`
-
-**Screenshot:** `screenshots/assignment2_lambda_config.png`
-
----
-
-### Step 7: Test the Lambda Function
+### Step 6: Test the Lambda Function
 
 1. Click **Test** tab
-2. Create test event:
-   - **Event name:** `TestS3Cleanup`
-   - **Event JSON:**
-   ```json
-   {
-     "bucket_name": "my-cleanup-test-bucket-<unique-id>",
-     "retention_days": 30
-   }
-   ```
-
-3. Click **Test**
 
 **Expected Results:**
 - Files older than 30 days are deleted
 - Recent files remain in bucket
 - Detailed log shows which files were deleted
 
-**Screenshot:** `screenshots/assignment2_test_result.png`
+**Screenshot:** 
+<img width="1920" height="2898" alt="step 7  delete files successfull ghanshyam_lamdba-Functions-Lambda-01-03-2026_11_08_PM" src="https://github.com/user-attachments/assets/8532529f-b289-4f41-ae26-bd94d2c93cf1" />
+
 
 ---
 
-### Step 8: Verify S3 Bucket
+### Step 7: Verify S3 Bucket
 
 1. Go to **S3 Console**
 2. Open your bucket
 3. Confirm only files newer than 30 days remain
 
-**Before Cleanup:**
-- old_file_1.txt (45 days old) ✓
-- old_file_2.txt (35 days old) ✓
-- recent_file_1.txt (5 days old) ✓
-- recent_file_2.txt (10 days old) ✓
-
-**After Cleanup:**
-- ~~old_file_1.txt (45 days old)~~ ✗ Deleted
-- ~~old_file_2.txt (35 days old)~~ ✗ Deleted
-- recent_file_1.txt (5 days old) ✓
-- recent_file_2.txt (10 days old) ✓
-
-**Screenshot:** `screenshots/assignment2_s3_after_cleanup.png`
+**Screenshot:** 
+<img width="1920" height="912" alt="step 8   ghanshyam-cleanup-bucket-S3-bucket-S3-us-east-1-01-03-2026_11_11_PM" src="https://github.com/user-attachments/assets/966a01b2-d09a-4f41-8601-1f873155ab58" />
 
 ---
-
-### Step 9: Review CloudWatch Logs
-
-1. **CloudWatch** → **Log groups** → `/aws/lambda/S3-Cleanup-Old-Files`
-2. View latest log stream
-
-**Sample Log Output:**
-```
-Lambda function started at 2026-01-03T10:45:00.000000
-Processing bucket: my-cleanup-test-bucket-12345
-Retention period: 30 days
-Cutoff date: 2025-12-04T10:45:00.000000+00:00
-Deleting: old_file_1.txt (Last modified: 2025-11-18, Age: 45 days, Size: 2048 bytes)
-Deleting: old_file_2.txt (Last modified: 2025-11-28, Age: 35 days, Size: 1024 bytes)
-Keeping: recent_file_1.txt (Age: 5 days)
-Keeping: recent_file_2.txt (Age: 10 days)
-Cleanup completed successfully
-Total files deleted: 2
-Total size freed: 3072 bytes (0.00 MB)
-```
-
-**Screenshot:** `screenshots/assignment2_cloudwatch_logs.png`
-
----
-
-## Optional Enhancements
-
-### Schedule Automatic Cleanup
-
-Set up EventBridge to run cleanup weekly:
-
-1. **EventBridge** → **Rules** → **Create Rule**
-2. Configuration:
-   - **Name:** `S3-Weekly-Cleanup`
-   - **Schedule:** `cron(0 2 ? * SUN *)` (2 AM every Sunday)
-   - **Target:** Lambda → `S3-Cleanup-Old-Files`
-
-**Screenshot:** `screenshots/assignment2_eventbridge.png`
-
-### Add SNS Notifications
-
-Modify the Lambda to send summary via SNS:
-
-```python
-import boto3
-
-sns = boto3.client('sns')
-SNS_TOPIC_ARN = 'arn:aws:sns:region:account:S3CleanupNotifications'
-
-# After cleanup
-message = f"""
-S3 Cleanup Summary
-Bucket: {bucket_name}
-Files Deleted: {len(deleted_files)}
-Size Freed: {total_size_freed / (1024*1024):.2f} MB
-"""
-
-sns.publish(
-    TopicArn=SNS_TOPIC_ARN,
-    Subject='S3 Cleanup Completed',
-    Message=message
-)
-```
-
----
-
-## Testing Scenarios
-
-### Test Case 1: Mixed Age Files
-- Upload files with various ages
-- Run Lambda
-- Verify only old files deleted
-
-### Test Case 2: Empty Bucket
-- Empty bucket
-- Run Lambda
-- Verify no errors occur
-
-### Test Case 3: All Old Files
-- Upload only old files
-- Run Lambda
-- Verify bucket is empty
-
-### Test Case 4: All Recent Files
-- Upload only recent files
-- Run Lambda
-- Verify no deletions occur
-
----
-
-## Troubleshooting
-
-### Issue: Access Denied
-**Error:** `An error occurred (AccessDenied)`
-
-**Solutions:**
-- Verify IAM role has S3 permissions
-- Check bucket policy doesn't block Lambda
-- Ensure bucket name is correct
-
-### Issue: No Files Deleted
-**Problem:** Lambda runs but doesn't delete files
-
-**Solutions:**
-- Check file timestamps are genuinely old
-- Verify `RETENTION_DAYS` configuration
-- Review CloudWatch logs for details
-- Ensure timezone handling is correct
-
-### Issue: Lambda Timeout
-**Error:** Task timed out
-
-**Solutions:**
-- Increase Lambda timeout
-- Process files in batches
-- Consider using S3 Lifecycle Policies for very large buckets
-
----
-
-## Cost Considerations
-
-- **Lambda:** Free tier covers 1M requests/month
-- **S3:** 
-  - Storage costs reduced by deleting old files
-  - LIST and DELETE API calls (minimal cost)
-- **CloudWatch Logs:** Free tier includes 5 GB
-
-**Alternative: S3 Lifecycle Policies**
-
-For simple age-based deletion, consider S3 Lifecycle Policies:
-- No Lambda required
-- Native S3 feature
-- Transition to Glacier or delete automatically
-
----
-
-## Security Best Practices
-
-1. ✅ Use least-privilege IAM policies
-2. ✅ Enable S3 versioning for critical data
-3. ✅ Test on non-production buckets first
-4. ✅ Enable S3 bucket logging
-5. ✅ Consider MFA delete for protection
-6. ⚠️ **Caution:** Deletion is permanent (unless versioning enabled)
-
----
-
-## Comparison: Lambda vs S3 Lifecycle Policies
-
-| Feature | Lambda Function | S3 Lifecycle Policy |
-|---------|----------------|---------------------|
-| Complexity | Custom logic possible | Simple age-based rules |
-| Cost | Lambda execution costs | No compute cost |
-| Flexibility | High (custom conditions) | Limited |
-| Logging | Detailed CloudWatch logs | Basic S3 logs |
-| Best For | Complex cleanup logic | Simple age-based cleanup |
-
----
-
-## Cleanup
-
-To avoid charges:
-
-1. Empty and delete S3 bucket
-2. Delete Lambda function
-3. Delete IAM role
-4. Delete CloudWatch log groups
-5. Delete EventBridge rules (if created)
-
----
-
-## Conclusion
-
-This assignment demonstrates:
-- ✅ S3 object management with Boto3
-- ✅ Date-based file filtering
-- ✅ Automated cleanup operations
-- ✅ CloudWatch logging and monitoring
-- ✅ Storage cost optimization
-
-**Key Learnings:**
-- S3 API operations (ListObjects, DeleteObject)
-- Working with datetime and timezones
-- Pagination for large result sets
-- Error handling for batch operations
-- When to use Lambda vs native AWS features
