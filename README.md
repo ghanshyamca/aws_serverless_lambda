@@ -11,3 +11,6 @@ Assignment refer:- https://github.com/ghanshyamca/aws_serverless_lambda/blob/mai
 
 # Assignment 4: Automatic EBS Snapshot and Cleanup Using AWS Lambda and Boto3
 Assignment refer:- https://github.com/ghanshyamca/aws_serverless_lambda/blob/main/docs/assignment4_ebs_snapshot_manager.md
+
+# Assignment 5: Auto-Tagging EC2 Instances on Launch
+Assignment refer:- https://github.com/ghanshyamca/aws_serverless_lambda/blob/main/docs/assignment5_auto_tag_ec2.md
