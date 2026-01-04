@@ -3,22 +3,6 @@
 ## Objective
 Automatically tag newly launched EC2 instances with current date and custom tags using AWS Lambda, CloudWatch Events (EventBridge), and Boto3.
 
-## Overview
-This solution creates an event-driven architecture that:
-- Detects EC2 instance launch events
-- Automatically applies tags to new instances
-- Ensures consistent tagging across infrastructure
-- Improves resource tracking and cost allocation
-
----
-
-## Prerequisites
-- AWS Account with EC2 and Lambda access
-- Understanding of CloudWatch Events (EventBridge)
-- Ability to launch EC2 instances
-
----
-
 ## Step-by-Step Implementation
 
 ### Step 1: Create IAM Role for Lambda
@@ -31,34 +15,8 @@ This solution creates an event-driven architecture that:
 
 4. Name: `Lambda-EC2-AutoTag-Role`
 
-**Production Policy (Least Privilege):**
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "ec2:DescribeInstances",
-        "ec2:CreateTags",
-        "ec2:DescribeTags"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents"
-      ],
-      "Resource": "arn:aws:logs:*:*:*"
-    }
-  ]
-}
-```
-
-**Screenshot:** `screenshots/assignment5_iam_role.png`
+**Screenshot:** 
+<img width="1920" height="1160" alt="Step 1  IAM role ghanshyam_lamdba-IAM-Global-01-04-2026_12_36_PM" src="https://github.com/user-attachments/assets/a41e0942-2d5a-4335-921f-fb71508dbf4c" />
 
 ---
 
@@ -67,13 +25,18 @@ This solution creates an event-driven architecture that:
 1. **Lambda Console** → **Create Function**
 2. Configuration:
    - **Function name:** `EC2-Auto-Tag`
-   - **Runtime:** Python 3.11 or 3.12
+   - **Runtime:** Python 3.14
    - **Architecture:** x86_64
    - **Execution role:** `Lambda-EC2-AutoTag-Role`
 
 3. Click **Create Function**
 
-**Screenshot:** `screenshots/assignment5_lambda_create.png`
+**Screenshot:**
+<img width="1920" height="1461" alt="step 2  Create-function-Functions-Lambda-01-04-2026_12_38_PM" src="https://github.com/user-attachments/assets/4dd084da-8da7-451c-9cc1-23fd555ecba4" />
+
+<img width="1920" height="2278" alt="step 3  ghanshyam_ec2_auto_tag-Functions-Lambda-01-04-2026_12_39_PM" src="https://github.com/user-attachments/assets/e72425b2-ffa6-488e-8a77-d8e97e64353f" />
+
+
 
 ---
 
@@ -95,28 +58,13 @@ This solution creates an event-driven architecture that:
 
 3. Click **Deploy**
 
-**Key Features:**
-- Extracts instance ID from CloudWatch Event
-- Retrieves instance details
-- Applies launch date and custom tags
-- Handles multiple event formats
-- Comprehensive error handling
+**Screenshot:** 
+<img width="1920" height="2278" alt="step 4  ghanshyam_ec2_auto_tag-Functions-Lambda-01-04-2026_12_41_PM" src="https://github.com/user-attachments/assets/16f0b99e-aff4-4dda-8ab4-6869f4cbedd6" />
 
-**Screenshot:** `screenshots/assignment5_lambda_code.png`
 
 ---
 
-### Step 4: Configure Lambda Settings
-
-1. **Configuration** → **General Configuration**
-   - **Timeout:** 30 seconds
-   - **Memory:** 128 MB
-
-**Screenshot:** `screenshots/assignment5_lambda_config.png`
-
----
-
-### Step 5: Create EventBridge Rule
+### Step 4: Create EventBridge Rule
 
 This is the key step that makes the function event-driven!
 
@@ -155,11 +103,13 @@ This is the key step that makes the function event-driven!
    - Review settings
    - Click **Create rule**
 
-**Screenshot:** `screenshots/assignment5_eventbridge_rule.png`
+**Screenshot:** 
+<img width="1920" height="1657" alt="step 5  Add-triggers-Lambda-01-04-2026_12_45_PM" src="https://github.com/user-attachments/assets/bef5328a-f1c8-459a-b460-96f45a8c217d" />
+
 
 ---
 
-### Step 6: Test by Launching an EC2 Instance
+### Step 5: Test by Launching an EC2 Instance
 
 Now test the automated tagging:
 
@@ -174,11 +124,15 @@ Now test the automated tagging:
 
 3. Click **Launch Instance**
 
-**Screenshot:** `screenshots/assignment5_ec2_launch.png`
+**Screenshot:** 
+<img width="1920" height="912" alt="step 6 1 Launch-an-instance-EC2-us-east-1-01-04-2026_12_55_PM" src="https://github.com/user-attachments/assets/3e348fc3-d7f9-41ba-aa65-1a7e6ce32f05" />
+<img width="1920" height="912" alt="step 7 1 Instance-details-EC2-us-east-1-01-04-2026_12_56_PM" src="https://github.com/user-attachments/assets/4faa91e8-ad71-44df-8b0a-88bf18c6a05d" />
+
+
 
 ---
 
-### Step 7: Verify Auto-Tagging
+### Step 6: Verify Auto-Tagging
 
 Wait 1-2 minutes for the instance to enter "running" state, then:
 
@@ -194,11 +148,13 @@ Wait 1-2 minutes for the instance to enter "running" state, then:
    - `Project`: AWS-Serverless-Lambda
    - `InstanceType`: t2.micro
 
-**Screenshot:** `screenshots/assignment5_ec2_tags.png`
+**Screenshot:** 
+<img width="1920" height="912" alt="step 8 3 Instance-details-EC2-us-east-1-01-04-2026_01_01_PM" src="https://github.com/user-attachments/assets/7d70ae21-c537-4954-bc3e-5554b0d96995" />
+
 
 ---
 
-### Step 8: Review CloudWatch Logs
+### Step 7: Review CloudWatch Logs
 
 1. **CloudWatch** → **Log groups** → `/aws/lambda/EC2-Auto-Tag`
 2. View latest log stream
@@ -242,244 +198,11 @@ Tags applied: {
 Successfully tagged instance i-0abcd1234efgh5678
 ```
 
-**Screenshot:** `screenshots/assignment5_cloudwatch_logs.png`
+**Screenshot:** 
+<img width="1920" height="912" alt="step 8 1 CloudWatch-us-east-1-01-04-2026_12_59_PM" src="https://github.com/user-attachments/assets/818c6f53-40c6-43ce-b7d7-b9eaa26817c2" />
+
+<img width="1920" height="912" alt="step 8 2 CloudWatch-us-east-1-01-04-2026_01_00_PM" src="https://github.com/user-attachments/assets/94734bb3-f4d6-419d-ae32-52bc7939cc74" />
+
+
 
 ---
-
-### Step 9: Review EventBridge Metrics
-
-1. **EventBridge Console** → **Rules** → `EC2-Instance-Launch-Trigger`
-2. Click **Monitoring** tab
-3. View metrics:
-   - Invocations
-   - TriggeredRules
-   - Failures
-
-**Screenshot:** `screenshots/assignment5_eventbridge_metrics.png`
-
----
-
-## Event Pattern Variations
-
-### Trigger on Multiple States
-
-Trigger on both `running` and `stopped` states:
-
-```json
-{
-  "source": ["aws.ec2"],
-  "detail-type": ["EC2 Instance State-change Notification"],
-  "detail": {
-    "state": ["running", "stopped"]
-  }
-}
-```
-
-### Trigger for Specific Instance Types
-
-Only tag t2.micro instances:
-
-```json
-{
-  "source": ["aws.ec2"],
-  "detail-type": ["EC2 Instance State-change Notification"],
-  "detail": {
-    "state": ["running"],
-    "instance-type": ["t2.micro"]
-  }
-}
-```
-
----
-
-## Advanced Tagging Strategies
-
-### Dynamic Tags Based on Instance Properties
-
-Modify Lambda to add tags based on instance attributes:
-
-```python
-def create_tags(instance_id, instance_details):
-    # ... existing code ...
-    
-    # Add tag based on instance type
-    if 't2.' in instance_details['InstanceType']:
-        tags.append({'Key': 'CostCenter', 'Value': 'Development'})
-    else:
-        tags.append({'Key': 'CostCenter', 'Value': 'Production'})
-    
-    # Add AZ tag
-    az = instance_details['AvailabilityZone']
-    tags.append({'Key': 'AZ', 'Value': az})
-    
-    # ... rest of code ...
-```
-
-### Tag Based on Existing Tags
-
-Check for existing tags and add complementary ones:
-
-```python
-existing_tags = get_existing_tags(instance_id)
-
-if 'Environment' not in existing_tags:
-    tags.append({'Key': 'Environment', 'Value': 'Unclassified'})
-```
-
----
-
-## Testing Scenarios
-
-### Test Case 1: New Instance Launch
-1. Launch new EC2 instance
-2. Wait for "running" state
-3. Verify tags are applied automatically
-
-### Test Case 2: Instance with Existing Tags
-1. Launch instance with manual tags
-2. Verify Lambda adds additional tags
-3. Ensure no tag conflicts
-
-### Test Case 3: Multiple Instances
-1. Launch multiple instances simultaneously
-2. Verify all instances are tagged
-3. Check CloudWatch logs for all executions
-
-### Test Case 4: Manual Invocation
-Create test event for manual testing:
-
-```json
-{
-  "detail": {
-    "instance-id": "i-0123456789abcdef0"
-  }
-}
-```
-
----
-
-## Troubleshooting
-
-### Issue: Tags Not Applied
-**Problem:** Instance launched but no tags appear
-
-**Solutions:**
-- Check EventBridge rule is **Enabled**
-- Verify Lambda has EC2 tagging permissions
-- Review CloudWatch logs for errors
-- Ensure instance entered "running" state
-- Check event pattern matches the event
-
-### Issue: Lambda Not Triggered
-**Problem:** Instance launched but Lambda didn't execute
-
-**Solutions:**
-- Verify EventBridge rule exists and is enabled
-- Check Lambda function is set as target
-- Review EventBridge metrics
-- Ensure instance is in the same region as Lambda
-
-### Issue: Permission Denied
-**Error:** `User: arn:aws:sts::... is not authorized to perform: ec2:CreateTags`
-
-**Solutions:**
-- Update IAM role with EC2 tagging permissions
-- Check trust relationship allows Lambda to assume role
-
----
-
-## Cost Considerations
-
-- **Lambda:** Free tier covers 1M requests/month
-- **EventBridge:** Free for AWS service events
-- **CloudWatch Logs:** Free tier includes 5 GB
-
-**Estimated Cost:** $0/month for typical usage (within free tier)
-
----
-
-## Use Cases
-
-### 1. Cost Allocation
-Auto-tag instances with cost center, project, and owner for billing reports
-
-### 2. Compliance
-Ensure all instances have required compliance tags
-
-### 3. Automation
-Tag instances for automated backup, patching, or shutdown policies
-
-### 4. Resource Tracking
-Track when resources were created and by whom
-
----
-
-## Security Best Practices
-
-1. ✅ Use least-privilege IAM policies
-2. ✅ Enable CloudTrail for audit logging
-3. ✅ Review Lambda logs regularly
-4. ✅ Test on development instances first
-5. ✅ Implement tag validation
-6. ✅ Consider tag immutability for critical tags
-
----
-
-## Extensions
-
-### Add SNS Notification
-
-Send notification when instances are tagged:
-
-```python
-import boto3
-sns = boto3.client('sns')
-
-sns.publish(
-    TopicArn='arn:aws:sns:region:account:InstanceTagging',
-    Subject='EC2 Instance Auto-Tagged',
-    Message=f'Instance {instance_id} was auto-tagged with {len(tags)} tags'
-)
-```
-
-### Tag Related Resources
-
-Also tag volumes, network interfaces:
-
-```python
-# Tag attached volumes
-volumes = instance_details.get('BlockDeviceMappings', [])
-for volume in volumes:
-    volume_id = volume['Ebs']['VolumeId']
-    ec2.create_tags(Resources=[volume_id], Tags=tags)
-```
-
----
-
-## Cleanup
-
-To remove the automation:
-
-1. Disable or delete EventBridge rule
-2. Delete Lambda function
-3. Delete IAM role
-4. Terminate test EC2 instances
-5. Delete CloudWatch log groups
-
----
-
-## Conclusion
-
-This assignment demonstrates:
-- ✅ Event-driven architecture with EventBridge
-- ✅ Automated resource tagging
-- ✅ Infrastructure governance
-- ✅ CloudWatch Events integration
-- ✅ Real-time automation
-
-**Key Learnings:**
-- EventBridge event patterns
-- Event-driven Lambda functions
-- EC2 tagging with Boto3
-- Automated compliance and governance
-- AWS service integration patterns
